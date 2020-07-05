@@ -13,7 +13,7 @@ import Vue from 'vue'
 import Peer from 'skyway-js'
 import { SetUpVideo } from '../../modules/video/SetUpVideo'
 import { GetPeerClient } from '../../modules/rtc/PeerClient'
-import { CallToClient } from '../../modules/rtc/CallToClient'
+import { GetCalling } from '../../modules/rtc/GetCalling'
 
 export default Vue.extend({
   data() {
@@ -25,10 +25,11 @@ export default Vue.extend({
   },
   async mounted() {
     const localVideo = this.$refs[this.boothId] as HTMLMediaElement
-    this.localStream = await SetUpVideo(localVideo, false)
+    this.localStream = await SetUpVideo(localVideo)
 
-    this.peer = GetPeerClient((peer: Peer) => {
-      CallToClient(peer, peer.id, this.localStream!, localVideo)
+    GetPeerClient((peer: Peer) => {
+      this.peer = peer
+      GetCalling(peer, this.localStream!, localVideo)
     })
   }
 })
